@@ -16,7 +16,7 @@ public class ComponentScript : MonoBehaviour
 
     public Component component;
 
-    private void Start()
+    void Awake()
     {
         switch (componentType)
         {
@@ -45,6 +45,7 @@ public abstract class Component : BreakableComponent
 {
     public bool isBroken = false;
     public float repairCost;
+    public ComponentType type;
 
     public void damage() //The default damage function is just to break the component.
     {
@@ -57,6 +58,7 @@ public class Fuse : Component, BreakableComponent
     public Fuse()
     {
         repairCost = 1;
+        type = ComponentType.FUSE;
     }
 }
 
@@ -66,6 +68,7 @@ public class Battery : Component, BreakableComponent
     public Battery()
     {
         repairCost = 2;
+        type = ComponentType.BATTERY;
     }
 
     public bool consumeCharge() //Returns true if it still has power, false if it doesn't
