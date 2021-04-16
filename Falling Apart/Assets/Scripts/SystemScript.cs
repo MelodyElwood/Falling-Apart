@@ -9,33 +9,124 @@ public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANE
 public class SystemScript : MonoBehaviour
 {
     public SystemType systemType;
+    public bool forcedWorking = false;
 
-    public System system;
+    public SystemClass system;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         switch (systemType)
         {
             case SystemType.OXYGEN_GENERATOR:
-                system = new Fuse();
+                system = new OxygenGenerator();
                 break;
             case SystemType.CO2_SCRUBBER:
-                system = new Battery();
+                system = new Co2Scrubber();
                 break;
             case SystemType.PRESSURIZER:
-                system = new WarningLight();
-                break;
-            case SystemType.SOLAR_PANELS:
-                //system = new WarningBuzzer();
+                system = new Pressurizer();
                 break;
             default:
-                Debug.LogError("Unkown System Type", this);
+                Debug.LogError("Unkown System Type: " + systemType);
                 break;
         }
     }
 }
 
-public abstract class System
+public abstract class SystemClass
 {
+    public List<ComponentType> requiredComponents = new List<ComponentType>();
+    public List<Component> systemComponents = new List<Component>();
 
+    public bool isWorking()
+    {
+        //First check if it's functional
+        foreach (ComponentType ct in requiredComponents)
+        {
+            bool hasThisComponent = false;
+            foreach (Component c in systemComponents)
+            {
+                if (c.type == ct)
+                {
+                    if (!c.isBroken)
+                    {
+                        hasThisComponent = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasThisComponent)
+            {
+                Debug.Log(this + " Does not have " + ct);
+                return false;
+            }
+        }
+
+        //Then check if it's connected to power (Change this to also check if power is running)
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken)
+            {
+                return true;
+            }
+        }
+
+        //If not, check that the battery works
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == ComponentType.BATTERY && !c.isBroken)
+            {
+                Debug.Log("Battery for " + this + " is out of charge.");
+                return this.useBattery(); //Returns false if it's not working
+            }
+        }
+
+        //Finaly send back false if it didn't have a power connector and battery
+        Debug.Log(this + " Does not have a battery or power connector that work");
+        return false;
+    }
+
+    public bool useBattery() //returns false if battery is not charged
+    {
+        foreach(Component c in systemComponents)
+        {
+            if(c.type == ComponentType.BATTERY)
+            {
+                Battery battery = (Battery)c;
+                return battery.consumeCharge();
+            }
+        }
+        return false;
+    }
+
+}
+
+public class OxygenGenerator : SystemClass
+{
+    public OxygenGenerator()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        //requiredComponents.Add(ComponentType.PUMP);
+    }
+}
+
+public class Co2Scrubber : SystemClass
+{
+    public Co2Scrubber()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        //requiredComponents.Add(ComponentType.PUMP);
+        //requiredComponents.Add(ComponentType.FILTER);
+        //requiredComponents.Add(ComponentType.CO2_TANK);
+    }
+}
+
+public class Pressurizer : SystemClass
+{
+    public Pressurizer()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        //requiredComponents.Add(ComponentType.PUMP);
+        //requiredComponents.Add(ComponentType.NITROGEN_TANK);
+    }
 }
