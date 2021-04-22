@@ -6,11 +6,11 @@ public class LifeSupport : MonoBehaviour
 {
     //These are in percents
     [Header("To Edit")]
-    public float safeMaxCO2 = 0.15f;
-    public float safeMinCO2 = 0.0f;
+    public float safeMaxCO2 = 15;
+    public float safeMinCO2 = 0;
     [Space(5)]
-    public float safeMaxO2 = 1; //combustion issues
-    public float safeMinO2 = 0.19f; //https://www.skuld.com/contentassets/4867cb8cc9f842a08c25d29050654527/oxygen-levels---skuld.pdf
+    public float safeMaxO2 = 100; //combustion issues
+    public float safeMinO2 = 19; //https://www.skuld.com/contentassets/4867cb8cc9f842a08c25d29050654527/oxygen-levels---skuld.pdf
     [Space(5)]
     public float safeMaxAtmospheres = 6; 
     public float safeMinAtmospheres = 0.07f;
@@ -66,7 +66,7 @@ public class LifeSupport : MonoBehaviour
         }
         if (pressurizer.isWorking() || pressurizerScript.forcedWorking)
         {
-            if (currentAtmospheres > 1)
+            if (currentAtmospheres > 1 || (pO2 <= safeMinO2 && currentO2 != 0))
             {
                 currentN--;
             }
