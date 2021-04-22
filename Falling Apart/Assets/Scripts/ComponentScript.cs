@@ -16,7 +16,7 @@ public class ComponentScript : MonoBehaviour
 
     public Component component;
 
-    private void Start()
+    void Awake()
     {
         switch (componentType)
         {
@@ -32,6 +32,9 @@ public class ComponentScript : MonoBehaviour
             case ComponentType.WARNING_BUZZER:
                 //component = new WarningBuzzer();
                 break;
+            case ComponentType.POWER_CONNECTOR:
+                component = new PowerConnector();
+                break;
             default:
                 Debug.LogError("Unkown Component Type", this);
                 break;
@@ -45,6 +48,7 @@ public abstract class Component : BreakableComponent
 {
     public bool isBroken = false;
     public float repairCost;
+    public ComponentType type;
 
     public void damage() //The default damage function is just to break the component.
     {
@@ -57,6 +61,7 @@ public class Fuse : Component, BreakableComponent
     public Fuse()
     {
         repairCost = 1;
+        type = ComponentType.FUSE;
     }
 }
 
@@ -66,6 +71,7 @@ public class Battery : Component, BreakableComponent
     public Battery()
     {
         repairCost = 2;
+        type = ComponentType.BATTERY;
     }
 
     public bool consumeCharge() //Returns true if it still has power, false if it doesn't
@@ -95,4 +101,16 @@ public class Battery : Component, BreakableComponent
         }
 
     }
+}
+
+
+public class PowerConnector : Component, BreakableComponent
+{
+    public PowerConnector()
+    {
+        repairCost = 2;
+        type = ComponentType.POWER_CONNECTOR;
+    }
+
+    //Add in checking if it's connected to power
 }
