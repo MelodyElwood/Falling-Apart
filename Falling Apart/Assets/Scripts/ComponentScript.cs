@@ -32,6 +32,9 @@ public class ComponentScript : MonoBehaviour
             case ComponentType.WARNING_BUZZER:
                 //component = new WarningBuzzer();
                 break;
+            case ComponentType.POWER_CONNECTOR:
+                component = new PowerConnector();
+                break;
             default:
                 Debug.LogError("Unkown Component Type", this);
                 break;
@@ -98,4 +101,16 @@ public class Battery : Component, BreakableComponent
         }
 
     }
+}
+
+
+public class PowerConnector : Component, BreakableComponent
+{
+    public PowerConnector()
+    {
+        repairCost = 2;
+        type = ComponentType.POWER_CONNECTOR;
+    }
+
+    //Add in checking if it's connected to power
 }

@@ -83,6 +83,7 @@ public abstract class SystemClass
 
         //Finaly send back false if it didn't have a power connector and battery
         Debug.Log(this + " Does not have a battery or power connector that work");
+        foreach(Component c in systemComponents) Debug.LogWarning(c + " IsBroken: " + c.isBroken + " Type: " + c.type + " IsAccepted: " + (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken));
         return false;
     }
 
@@ -97,6 +98,15 @@ public abstract class SystemClass
             }
         }
         return false;
+    }
+
+    public void AddComponent(Component component)
+    {
+        systemComponents.Add(component);
+    }
+    public void RemoveComponent(Component component)
+    {
+        systemComponents.Remove(component);
     }
 
 }

@@ -1,19 +1,52 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.XR;
+using UnityEngine.XR.Interaction.Toolkit;
 
-public class SystemSocket : ----
+public class SystemSocket : XRSocketInteractor
 {
-    // Start is called before the first frame update
-    void Start()
+    [Space(10)]
+    public SystemScript parentSystemScript;
+    public ComponentType targetComponent;
+
+    SystemClass parentSystem;
+
+    public override bool CanHover(XRBaseInteractable interactable)
     {
-        
+        return base.CanHover(interactable) && IsTargetComponent(interactable);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override bool CanSelect(XRBaseInteractable interactable)
     {
-        
+        return base.CanSelect(interactable) && IsTargetComponent(interactable);
+    }
+
+    private bool IsTargetComponent(XRBaseInteractable interactable)
+    {
+        ComponentScript componentScript = interactable.gameObject.GetComponent<ComponentScript>();
+        if (componentScript != null)
+        {
+            if(componentScript.componentType == targetComponent)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Called just before the component is added
+    protected override void OnSelectEntering(XRBaseInteractable interactable)
+    {
+        parentSystem = parentSystemScript.system;
+        parentSystem.AddComponent(interactable.GetComponent<ComponentScript>().component);
+        base.OnSelectEntering(interactable);
+    }
+
+    //Called just before the component is removed
+    protected override void OnSelectExiting(XRBaseInteractable interactable)
+    {
+        parentSystem = parentSystemScript.system;
+        parentSystem.RemoveComponent(interactable.GetComponent<ComponentScript>().component);
+        base.OnSelectExiting(interactable);
     }
 }
