@@ -47,7 +47,7 @@ public class ComponentScript : MonoBehaviour
 public abstract class Component : BreakableComponent
 {
     public bool isBroken = false;
-    public float repairCost;
+    public float repairCost; //The "cost" to repair, translates to time in the repair-majig
     public ComponentType type;
 
     public void damage() //The default damage function is just to break the component.

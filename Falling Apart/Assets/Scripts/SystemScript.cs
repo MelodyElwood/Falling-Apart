@@ -5,7 +5,6 @@ using UnityEngine;
 
 public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANELS, BATTERY_CHARGER, MAIN_LIGHTS, BACKUP_LIGHTS, MAIN_COMPUTER };
 
-
 public class SystemScript : MonoBehaviour
 {
     public SystemType systemType;
