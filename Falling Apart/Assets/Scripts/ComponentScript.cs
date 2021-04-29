@@ -39,7 +39,7 @@ public class ComponentScript : MonoBehaviour
                 component = new AlarmBuzzer();
                 break;
             case ComponentType.SCREEN:
-                component = new Screen();
+                component = new ScreenComponent();
                 break;
             case ComponentType.POWER_CONNECTOR:
                 component = new PowerConnector();
@@ -159,9 +159,9 @@ public class AlarmBuzzer : Component, BreakableComponent
 }
 
 
-public class Screen : Component, BreakableComponent
+public class ScreenComponent : Component, BreakableComponent
 {
-    public Screen()
+    public ScreenComponent()
     {
         repairCost = 1;
         type = ComponentType.SCREEN;

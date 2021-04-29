@@ -70,7 +70,8 @@ public class LifeSupport : MonoBehaviour
             {
                 if (c.type == ComponentType.FILTER)
                 {
-                    c.filterAir();
+                    Filter f = (Filter)c;
+                    f.filterAir();
                 }
             }
         }
