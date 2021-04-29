@@ -18,6 +18,11 @@ public class ComponentScript : MonoBehaviour
 
     void Awake()
     {
+        this.createComponent();
+    }
+
+    public void createComponent()
+    {
         switch (componentType)
         {
             case ComponentType.FUSE:
