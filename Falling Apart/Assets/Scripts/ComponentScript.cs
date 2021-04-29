@@ -7,7 +7,7 @@ interface BreakableComponent
     void damage();
 }
 
-public enum ComponentType { FUSE, BATTERY, WARNING_LIGHT, WARNING_BUZZER, ALARM_LIGHT, ALARM_BUZZER, SCREEN, POWER_CONNECTOR };
+public enum ComponentType { FUSE, BATTERY, WARNING_LIGHT, WARNING_BUZZER, ALARM_LIGHT, ALARM_BUZZER, SCREEN, POWER_CONNECTOR, PUMP , CO2_TANK, NITROGEN_TANK, FILTER};
 
 
 public class ComponentScript : MonoBehaviour
@@ -27,13 +27,34 @@ public class ComponentScript : MonoBehaviour
                 component = new Battery();
                 break;
             case ComponentType.WARNING_LIGHT:
-                //component = new WarningLight();
+                component = new WarningLight();
                 break;
             case ComponentType.WARNING_BUZZER:
-                //component = new WarningBuzzer();
+                component = new WarningBuzzer();
+                break;
+            case ComponentType.ALARM_LIGHT:
+                component = new AlarmLight();
+                break;
+            case ComponentType.ALARM_BUZZER:
+                component = new AlarmBuzzer();
+                break;
+            case ComponentType.SCREEN:
+                component = new Screen();
                 break;
             case ComponentType.POWER_CONNECTOR:
                 component = new PowerConnector();
+                break;
+            case ComponentType.PUMP:
+                component = new Pump();
+                break;
+            case ComponentType.CO2_TANK:
+                component = new CO2Tank();
+                break;
+            case ComponentType.NITROGEN_TANK:
+                component = new NitrogenTank();
+                break;
+            case ComponentType.FILTER:
+                component = new Filter();
                 break;
             default:
                 Debug.LogError("Unkown Component Type", this);
@@ -103,6 +124,49 @@ public class Battery : Component, BreakableComponent
     }
 }
 
+public class WarningLight : Component, BreakableComponent
+{
+    public WarningLight()
+    {
+        repairCost = 0.5f;
+        type = ComponentType.WARNING_LIGHT;
+    }
+}
+public class WarningBuzzer : Component, BreakableComponent
+{
+    public WarningBuzzer()
+    {
+        repairCost = 0.5f;
+        type = ComponentType.WARNING_BUZZER;
+    }
+}
+
+public class AlarmLight : Component, BreakableComponent
+{
+    public AlarmLight()
+    {
+        repairCost = 0.5f;
+        type = ComponentType.ALARM_LIGHT;
+    }
+}
+public class AlarmBuzzer : Component, BreakableComponent
+{
+    public AlarmBuzzer()
+    {
+        repairCost = 0.5f;
+        type = ComponentType.ALARM_BUZZER;
+    }
+}
+
+
+public class Screen : Component, BreakableComponent
+{
+    public Screen()
+    {
+        repairCost = 1;
+        type = ComponentType.SCREEN;
+    }
+}
 
 public class PowerConnector : Component, BreakableComponent
 {
@@ -113,4 +177,59 @@ public class PowerConnector : Component, BreakableComponent
     }
 
     //Add in checking if it's connected to power
+}
+
+public class Pump : Component, BreakableComponent
+{
+    public Pump()
+    {
+        repairCost = 3;
+        type = ComponentType.PUMP;
+    }
+}
+
+public class CO2Tank : Component, BreakableComponent
+{
+    public CO2Tank()
+    {
+        repairCost = 2.5f;
+        type = ComponentType.CO2_TANK;
+    }
+}
+
+public class NitrogenTank : Component, BreakableComponent
+{
+    public NitrogenTank()
+    {
+        repairCost = 2.5f;
+        type = ComponentType.NITROGEN_TANK;
+    }
+}
+
+public class Filter : Component, BreakableComponent
+{
+    public int grime;
+    public Filter()
+    {
+        repairCost = 9999; //IsBroken is if it is too dirty not if it is broken
+        type = ComponentType.FILTER;
+        grime = 0;
+    }
+
+    public void clean() //To be called to clean the filter
+    {
+        grime = 0;
+        isBroken = false;
+    }
+
+    public void filterAir() //while filtering the air, the filter will build up grime.
+    {
+        grime += 1;
+        if(grime >= 100)
+        {
+            this.damage();
+        }
+    }
+
+
 }
