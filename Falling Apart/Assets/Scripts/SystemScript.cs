@@ -5,7 +5,6 @@ using UnityEngine;
 
 public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANELS, BATTERY_CHARGER, MAIN_LIGHTS, BACKUP_LIGHTS, MAIN_COMPUTER };
 
-
 public class SystemScript : MonoBehaviour
 {
     public SystemType systemType;
@@ -116,7 +115,7 @@ public class OxygenGenerator : SystemClass
     public OxygenGenerator()
     {
         requiredComponents.Add(ComponentType.FUSE);
-        //requiredComponents.Add(ComponentType.PUMP);
+        requiredComponents.Add(ComponentType.PUMP);
     }
 }
 
@@ -125,9 +124,9 @@ public class Co2Scrubber : SystemClass
     public Co2Scrubber()
     {
         requiredComponents.Add(ComponentType.FUSE);
-        //requiredComponents.Add(ComponentType.PUMP);
-        //requiredComponents.Add(ComponentType.FILTER);
-        //requiredComponents.Add(ComponentType.CO2_TANK);
+        requiredComponents.Add(ComponentType.PUMP);
+        requiredComponents.Add(ComponentType.FILTER);
+        requiredComponents.Add(ComponentType.CO2_TANK);
     }
 }
 
@@ -136,7 +135,7 @@ public class Pressurizer : SystemClass
     public Pressurizer()
     {
         requiredComponents.Add(ComponentType.FUSE);
-        //requiredComponents.Add(ComponentType.PUMP);
-        //requiredComponents.Add(ComponentType.NITROGEN_TANK);
+        requiredComponents.Add(ComponentType.PUMP);
+        requiredComponents.Add(ComponentType.NITROGEN_TANK);
     }
 }

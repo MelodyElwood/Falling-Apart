@@ -58,14 +58,26 @@ public class LifeSupport : MonoBehaviour
         //Activate life support systems
         if(oxygenGenerator.isWorking() || oxygenGeneratorScript.forcedWorking)
         {
+            //Create O2
             currentO2 += O2Steps;
         }
         if (co2Scrubber.isWorking() || CO2ScrubberScript.forcedWorking)
         {
+            //Get rid of CO2
             currentCO2 -= CO2Steps;
+            //make the filter get more grime
+            foreach(Component c in co2Scrubber.systemComponents)
+            {
+                if (c.type == ComponentType.FILTER)
+                {
+                    Filter f = (Filter)c;
+                    f.filterAir();
+                }
+            }
         }
         if (pressurizer.isWorking() || pressurizerScript.forcedWorking)
         {
+            //Stabalize the atmosphere
             if (currentAtmospheres > 1 || (pO2 <= safeMinO2 && currentO2 != 0))
             {
                 currentN--;
