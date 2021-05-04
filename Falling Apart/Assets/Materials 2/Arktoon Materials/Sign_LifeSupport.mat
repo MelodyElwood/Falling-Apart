@@ -7,23 +7,18 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Test1
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION
-  m_LightmapFlags: 2
+  m_Name: Sign_LifeSupport
+  m_Shader: {fileID: 4800000, guid: 574148b9e7a726649a282e2a179b1b60, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-    - _AlphaMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -101,7 +96,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveWaves1Tex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: e1c1183d7dc6f1e40be596a3c00a1266, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveWaves1TintAFOMask:
@@ -141,7 +136,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveWaves1TraceMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f0542ea7d1f7d1a4980a7bd03c9589be, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissiveWaves1TraceOutSmoothMap:
@@ -193,10 +188,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OutlineMask:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -293,7 +284,6 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AlphaMaskUV: 0
     - _BumpMapUV: 0
     - _BumpScale: 1
     - _CustomShadow2nd: 0
@@ -305,7 +295,7 @@ Material:
     - _DoubleSidedBackfaceUseColorShift: 0
     - _DoubleSidedBackfaceValueFromBase: 1
     - _DoubleSidedFlipBackfaceNormal: 0
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _Emission2MapUV: 0
     - _EmissionMapUV: 0
     - _EmissionParallaxDepth: 0
@@ -372,7 +362,7 @@ Material:
     - _EmissiveWaves1UseBlinkTypeMap: 0
     - _EmissiveWaves1UseBlinkUnisonMap: 0
     - _EmissiveWaves1UseBlinkUnisonNormalizeMap: 0
-    - _EmissiveWaves1UseSecond: 1
+    - _EmissiveWaves1UseSecond: 0
     - _EmissiveWaves1UseTintTypeMap: 0
     - _EmissiveWaves1UseTraceInOutRatioMap: 0
     - _EmissiveWaves1UseTraceInSmoothMap: 0
@@ -384,7 +374,7 @@ Material:
     - _GlossPower: 0.5
     - _GlossPowerMaskUV: 0
     - _GlossTextureUV: 0
-    - _Glossiness: 0
+    - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LightColorSaturation: 1
     - _LightColorSaturationMaskUV: 0
@@ -397,13 +387,11 @@ Material:
     - _MatcapShadeMix: 0
     - _MatcapTextureUV: 0
     - _Metallic: 0
-    - _Mode: 3
+    - _Mode: 0
     - _OcclusionStrength: 1
     - _OtherShadowAdjust: -0.1
     - _OtherShadowBorderSharpness: 3
-    - _OutlineCutoffRange: 0.5
     - _OutlineHueShiftFromBase: 0
-    - _OutlineMaskUV: 0
     - _OutlineSaturationFromBase: 1
     - _OutlineShadeMix: 0
     - _OutlineTextureColorRate: 0.05
@@ -458,7 +446,7 @@ Material:
     - _ShadowStrength: 0.5
     - _ShadowStrengthMaskUV: 0
     - _ShadowUseStep: 0
-    - _Shadowborder: 0.662
+    - _Shadowborder: 0.6
     - _ShadowborderBlur: 0.05
     - _ShadowborderBlurMaskUV: 0
     - _SmoothnessTextureChannel: 0
@@ -473,7 +461,7 @@ Material:
     - _UseEmissionParallax: 0
     - _UseEmissiveWaves1Blink: 0
     - _UseEmissiveWaves1Tint: 0
-    - _UseEmissiveWaves1Trace: 0
+    - _UseEmissiveWaves1Trace: 1
     - _UseGloss: 0
     - _UseOutline: 0
     - _UsePositionRelatedCalc: 0
@@ -490,13 +478,13 @@ Material:
     - _Version: 0
     - _VertexColorBlendDiffuse: 0
     - _VertexColorBlendEmissive: 0
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _Emission2Color: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionColor: {r: 0, g: 0.9500499, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0.27968928, b: 0.3773585, a: 1}
     - _EmissionParallaxColor: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissiveWaves1Color: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveWaves1Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveWaves1TintColorA: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveWaves1TintColorB: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveWaves1TintColorC: {r: 1, g: 1, b: 1, a: 1}
