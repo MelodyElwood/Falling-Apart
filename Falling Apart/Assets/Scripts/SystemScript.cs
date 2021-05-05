@@ -25,6 +25,9 @@ public class SystemScript : MonoBehaviour
             case SystemType.PRESSURIZER:
                 system = new Pressurizer();
                 break;
+            case SystemType.SOLAR_PANELS:
+                system = new SolarPanels();
+                break;
             default:
                 Debug.LogError("Unkown System Type: " + systemType);
                 break;
@@ -133,6 +136,16 @@ public class Co2Scrubber : SystemClass
 public class Pressurizer : SystemClass
 {
     public Pressurizer()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.PUMP);
+        requiredComponents.Add(ComponentType.NITROGEN_TANK);
+    }
+}
+
+public class SolarPanels : SystemClass
+{
+    public SolarPanels()
     {
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.PUMP);
