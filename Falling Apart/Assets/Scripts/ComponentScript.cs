@@ -18,6 +18,11 @@ public class ComponentScript : MonoBehaviour
 
     void Awake()
     {
+        this.createComponent();
+    }
+
+    public void createComponent()
+    {
         switch (componentType)
         {
             case ComponentType.FUSE:
@@ -71,7 +76,7 @@ public abstract class Component : BreakableComponent
     public float repairCost; //The "cost" to repair, translates to time in the repair-majig
     public ComponentType type;
 
-    public void damage() //The default damage function is just to break the component.
+    public virtual void damage() //The default damage function is just to break the component.
     {
         this.isBroken = true;
     }
@@ -227,9 +232,17 @@ public class Filter : Component, BreakableComponent
         grime += 1;
         if(grime >= 100)
         {
-            this.damage();
+            isBroken = true;
         }
     }
 
+    public override void damage()
+    {
+        grime += 10;
+        if (grime >= 100)
+        {
+            isBroken = true;
+        }
+    }
 
 }

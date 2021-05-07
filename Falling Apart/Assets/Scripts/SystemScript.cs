@@ -25,6 +25,9 @@ public class SystemScript : MonoBehaviour
             case SystemType.PRESSURIZER:
                 system = new Pressurizer();
                 break;
+            case SystemType.SOLAR_PANELS:
+                system = new SolarPanels();
+                break;
             default:
                 Debug.LogError("Unkown System Type: " + systemType);
                 break;
@@ -62,12 +65,9 @@ public abstract class SystemClass
         }
 
         //Then check if it's connected to power (Change this to also check if power is running)
-        foreach (Component c in systemComponents)
+        if(this.isConnected())
         {
-            if (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken)
-            {
-                return true;
-            }
+            return true;
         }
 
         //If not, check that the battery works
@@ -83,6 +83,42 @@ public abstract class SystemClass
         //Finaly send back false if it didn't have a power connector and battery
         Debug.Log(this + " Does not have a battery or power connector that work");
         foreach(Component c in systemComponents) Debug.LogWarning(c + " IsBroken: " + c.isBroken + " Type: " + c.type + " IsAccepted: " + (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken));
+        return false;
+    } //Check if it is working        (NEEDS TO BE FIXED WITH getComponent)
+
+    public bool isConnected()
+    {
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken)
+            {
+                return true;
+            }
+        }
+        return false;
+    } //Check if it is connected to the power network     (DOES NOT CHECK IF POWER IS ON)
+
+    public Component getComponent(ComponentType type) //Finds a component based on a type and returns it, returns null if there is no component.
+    {
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == type)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public bool hasComponent(ComponentType type) //Checks if it has a component based on a type
+    {
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == type)
+            {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -107,7 +143,6 @@ public abstract class SystemClass
     {
         systemComponents.Remove(component);
     }
-
 }
 
 public class OxygenGenerator : SystemClass
@@ -133,6 +168,16 @@ public class Co2Scrubber : SystemClass
 public class Pressurizer : SystemClass
 {
     public Pressurizer()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.PUMP);
+        requiredComponents.Add(ComponentType.NITROGEN_TANK);
+    }
+}
+
+public class SolarPanels : SystemClass
+{
+    public SolarPanels()
     {
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.PUMP);
