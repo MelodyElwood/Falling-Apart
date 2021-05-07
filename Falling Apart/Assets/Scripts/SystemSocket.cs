@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class SystemSocket : XRSocketInteractor
 {
     [Space(10)]
+    [Header("System Socket Variables")]
     public SystemScript parentSystemScript;
     public ComponentType targetComponent;
 
