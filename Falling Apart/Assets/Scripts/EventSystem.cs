@@ -10,6 +10,7 @@ public class EventSystem : MonoBehaviour
     public int powerSurgeFusePercentage = 90;
 
     SystemScript[] systems;
+    LifeSupport lifeSupport;
 
     // Start is called before the first frame update
     void Start()
@@ -57,7 +58,7 @@ public class EventSystem : MonoBehaviour
         //4. Combustion: Loose the game if O2 percentage is above 50%
         else if (eventRoll == 4)
         {
-            //How are we loosing the game?
+            lifeSupport.die();
         }
         //5-7 Nothing happens
 

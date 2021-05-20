@@ -40,6 +40,7 @@ public class SystemSocket : XRSocketInteractor
     {
         parentSystem = parentSystemScript.system;
         parentSystem.AddComponent(interactable.GetComponent<ComponentScript>().component);
+        if (interactable.gameObject.GetComponent<ComponentScript>().componentType == ComponentType.FILTER) ((Filter)interactable.gameObject.GetComponent<ComponentScript>().component).clean();
         base.OnSelectEntering(interactable);
     }
 

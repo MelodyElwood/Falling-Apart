@@ -5,8 +5,10 @@ using UnityEngine;
 
 public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANELS, BATTERY_CHARGER, MAIN_LIGHTS, BACKUP_LIGHTS, MAIN_COMPUTER };
 
+
 public class SystemScript : MonoBehaviour
 {
+    public static bool powerIsOn;
     public SystemType systemType;
     public bool forcedWorking = false;
 
@@ -28,6 +30,15 @@ public class SystemScript : MonoBehaviour
             case SystemType.SOLAR_PANELS:
                 system = new SolarPanels();
                 break;
+            case SystemType.BACKUP_LIGHTS:
+                system = new BackupLights();
+                break;
+            case SystemType.BATTERY_CHARGER:
+                system = new BatteryCharger();
+                break;
+            case SystemType.MAIN_LIGHTS:
+                system = new MainLights();
+                break;
             default:
                 Debug.LogError("Unkown System Type: " + systemType);
                 break;
@@ -40,7 +51,9 @@ public abstract class SystemClass
     public List<ComponentType> requiredComponents = new List<ComponentType>();
     public List<Component> systemComponents = new List<Component>();
 
-    public bool isWorking()
+    public virtual void runTick() { }
+
+    public bool isWorking(bool consumeCharge)
     {
         //First check if it's functional
         foreach (ComponentType ct in requiredComponents)
@@ -76,7 +89,7 @@ public abstract class SystemClass
             if (c.type == ComponentType.BATTERY && !c.isBroken)
             {
                 Debug.Log("Battery for " + this + " is out of charge.");
-                return this.useBattery(); //Returns false if it's not working
+                return this.useBattery(consumeCharge); //Returns false if it's not working
             }
         }
 
@@ -90,13 +103,13 @@ public abstract class SystemClass
     {
         foreach (Component c in systemComponents)
         {
-            if (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken)
+            if (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken && SystemScript.powerIsOn)
             {
                 return true;
             }
         }
         return false;
-    } //Check if it is connected to the power network     (DOES NOT CHECK IF POWER IS ON)
+    } //Check if it is connected to the power network
 
     public Component getComponent(ComponentType type) //Finds a component based on a type and returns it, returns null if there is no component.
     {
@@ -122,14 +135,14 @@ public abstract class SystemClass
         return false;
     }
 
-    public bool useBattery() //returns false if battery is not charged
+    public bool useBattery(bool consumeCharge) //returns false if battery is not charged
     {
         foreach(Component c in systemComponents)
         {
             if(c.type == ComponentType.BATTERY)
             {
                 Battery battery = (Battery)c;
-                return battery.consumeCharge();
+                return battery.consumeCharge(consumeCharge);
             }
         }
         return false;
@@ -182,5 +195,68 @@ public class SolarPanels : SystemClass
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.PUMP);
         requiredComponents.Add(ComponentType.NITROGEN_TANK);
+    }
+
+    
+    public override void runTick() {
+        if(this.isWorking(true))
+        {
+            SystemScript.powerIsOn = true;
+        }
+    }
+}
+
+public class MainLights : SystemClass
+{
+    public MainLights()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.POWER_CONNECTOR);
+    }
+    public override void runTick()
+    {
+        if (this.isWorking(true))
+        {
+            //Main light empty off
+        }
+    }
+}
+
+public class BackupLights : SystemClass
+{
+    public BackupLights()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.POWER_CONNECTOR);
+    }
+    public override void runTick()
+    {
+        if (this.isWorking(true))
+        {
+            //backup light empty off
+        }
+    }
+}
+
+public class BatteryCharger : SystemClass
+{
+    public BatteryCharger()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.FUSE);
+        requiredComponents.Add(ComponentType.POWER_CONNECTOR);
+    }
+    public override void runTick()
+    {
+        if (this.isWorking(true))
+        {
+            foreach(Component c in systemComponents)
+            {
+                if(c.type == ComponentType.BATTERY)
+                {
+                    ((Battery)c).recharge();
+                }
+            }
+        }
     }
 }
