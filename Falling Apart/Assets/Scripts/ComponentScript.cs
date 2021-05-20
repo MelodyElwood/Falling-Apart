@@ -100,7 +100,7 @@ public class Battery : Component, BreakableComponent
         type = ComponentType.BATTERY;
     }
 
-    public bool consumeCharge() //Returns true if it still has power, false if it doesn't
+    public bool consumeCharge(bool consumeCharge) //Returns true if it still has power, false if it doesn't
     {
         if (charge <= 0)
         {
@@ -109,7 +109,7 @@ public class Battery : Component, BreakableComponent
         }
         else
         {
-            charge--;
+            if(consumeCharge) charge--;
             return true;
         }
     }
@@ -224,6 +224,7 @@ public class Filter : Component, BreakableComponent
     public void clean() //To be called to clean the filter
     {
         grime = 0;
+        Debug.Log("Filter Cleaned");
         isBroken = false;
     }
 
