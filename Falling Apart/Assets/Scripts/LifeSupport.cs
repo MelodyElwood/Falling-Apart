@@ -19,6 +19,8 @@ public class LifeSupport : MonoBehaviour
     public SystemScript oxygenGeneratorScript;
     public SystemScript CO2ScrubberScript;
     public SystemScript pressurizerScript;
+    public SystemScript solarPannelScript;
+    public Death overlay;
     [Space(10)]
     public float O2Steps = 1.2f;
     public float CO2Steps = 1.2f;
@@ -39,10 +41,28 @@ public class LifeSupport : MonoBehaviour
     OxygenGenerator oxygenGenerator;
     Co2Scrubber co2Scrubber;
     Pressurizer pressurizer;
+    SolarPanels solarPanels;
+
+
+    SystemScript[] systemsScripts;
+    List<SystemClass> systems = new List<SystemClass>();
 
     // Start is called before the first frame update
     void Start()
     {
+        //Create list of all systems
+        solarPanels = (SolarPanels)solarPannelScript.system;
+        systemsScripts = Object.FindObjectsOfType<SystemScript>();
+        systems.Add(solarPanels); //Make sure the power system is checked first
+        foreach(SystemScript s in systemsScripts)
+        {
+            if (s != null)
+            {
+                systems.Add(s.system);
+            }
+        }
+        
+
         currentO2 = 21;
         currentCO2 = 1;
         currentN = 78;
@@ -55,13 +75,19 @@ public class LifeSupport : MonoBehaviour
 
     void Run()
     {
+        //Run all of the systems that need to run on tick
+        foreach(SystemClass s in systems)
+        {
+            s.runTick();
+        }
+        
         //Activate life support systems
-        if(oxygenGenerator.isWorking() || oxygenGeneratorScript.forcedWorking)
+        if(oxygenGenerator.isWorking(true) || oxygenGeneratorScript.forcedWorking)
         {
             //Create O2
             currentO2 += O2Steps;
         }
-        if (co2Scrubber.isWorking() || CO2ScrubberScript.forcedWorking)
+        if (co2Scrubber.isWorking(true) || CO2ScrubberScript.forcedWorking)
         {
             //Get rid of CO2
             currentCO2 -= CO2Steps;
@@ -75,7 +101,7 @@ public class LifeSupport : MonoBehaviour
                 }
             }
         }
-        if (pressurizer.isWorking() || pressurizerScript.forcedWorking)
+        if (pressurizer.isWorking(true) || pressurizerScript.forcedWorking)
         {
             //Stabalize the atmosphere
             if (currentAtmospheres > 1 || (pO2 <= safeMinO2 && currentO2 != 0))
@@ -105,19 +131,19 @@ public class LifeSupport : MonoBehaviour
         if(currentAtmospheres > safeMaxAtmospheres || currentAtmospheres < safeMinAtmospheres)
         {
             Debug.Log("Warning, Preasure");
-            //Do something to cause the player to loose
+            die();
         }
 
         if(pO2 > safeMaxO2 || pO2 < safeMinO2)
         {
             Debug.Log("Warning, O2");
-            //Do something to cause the player to loose
+            die();
         }
 
         if (pCO2 > safeMaxCO2 || pCO2 < safeMinCO2)
         {
             Debug.Log("Warning, CO2");
-            //Do something to cause the player to loose
+            die();
         }
     }
 
@@ -129,5 +155,10 @@ public class LifeSupport : MonoBehaviour
     float getPercentage(float x)
     {
         return x/currentAtmospheres;
+    }
+
+    public void die()
+    {
+        overlay.FadeOut();
     }
 }
