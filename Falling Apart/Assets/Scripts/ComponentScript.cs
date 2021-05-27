@@ -74,6 +74,7 @@ public abstract class Component : BreakableComponent
 {
     public bool isBroken = false;
     public float repairCost; //The "cost" to repair, translates to time in the repair-majig
+    public int repairTime; //How long it has been repairing
     public ComponentType type;
 
     public virtual void damage() //The default damage function is just to break the component.
@@ -162,7 +163,6 @@ public class AlarmBuzzer : Component, BreakableComponent
         type = ComponentType.ALARM_BUZZER;
     }
 }
-
 
 public class ScreenComponent : Component, BreakableComponent
 {

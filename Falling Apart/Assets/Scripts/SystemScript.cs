@@ -260,3 +260,24 @@ public class BatteryCharger : SystemClass
         }
     }
 }
+
+public class RepairStation : SystemClass
+{
+    Component componentRepairing;
+    public RepairStation()
+    {
+        requiredComponents.Add(ComponentType.FUSE);
+    }
+
+    public override void runTick()
+    {
+        if(componentRepairing != null)
+        {
+            componentRepairing.repairTime++;
+            if(componentRepairing.repairTime > 20*componentRepairing.repairCost)
+            {
+                Debug.Log("Repair Complete On: " + componentRepairing.type);
+            }
+        }
+    }
+}
