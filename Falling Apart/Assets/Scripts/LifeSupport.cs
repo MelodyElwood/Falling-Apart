@@ -13,7 +13,7 @@ public class LifeSupport : MonoBehaviour
     public float safeMinO2 = 19; //https://www.skuld.com/contentassets/4867cb8cc9f842a08c25d29050654527/oxygen-levels---skuld.pdf
     [Space(5)]
     public float safeMaxAtmospheres = 6; 
-    public float safeMinAtmospheres = 0.07f;
+    public float safeMinAtmospheres = 0.0617f;
 
     [Space(10)]
     public SystemScript oxygenGeneratorScript;
@@ -22,8 +22,9 @@ public class LifeSupport : MonoBehaviour
     public SystemScript solarPannelScript;
     public Death overlay;
     [Space(10)]
-    public float O2Steps = 1.2f;
-    public float CO2Steps = 1.2f;
+    public float O2Steps = 1.1f;
+    public float CO2Steps = 1.1f;
+    public float NDrain = 0.4f;
     [Space(5)]
     public float waitToStart = 0;
     public float tickTime = 1;
@@ -117,6 +118,7 @@ public class LifeSupport : MonoBehaviour
         //Breathing
         currentO2--;
         currentCO2++;
+        currentN -= NDrain;
 
         //can't have - oxygen, co2, or Nitrogen
         if (currentO2 < 0) currentO2 = 0;
