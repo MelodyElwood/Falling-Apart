@@ -164,6 +164,7 @@ public class AlarmBuzzer : Component, BreakableComponent
     }
 }
 
+
 public class ScreenComponent : Component, BreakableComponent
 {
     public ScreenComponent()

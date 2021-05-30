@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANELS, BATTERY_CHARGER, MAIN_LIGHTS, BACKUP_LIGHTS, MAIN_COMPUTER };
+public enum SystemType { OXYGEN_GENERATOR, CO2_SCRUBBER, PRESSURIZER, SOLAR_PANELS, BATTERY_CHARGER, MAIN_LIGHTS, BACKUP_LIGHTS, MAIN_COMPUTER, REPAIR_STATION };
 
 
 public class SystemScript : MonoBehaviour
@@ -38,6 +38,9 @@ public class SystemScript : MonoBehaviour
                 break;
             case SystemType.MAIN_LIGHTS:
                 system = new MainLights();
+                break;
+            case SystemType.REPAIR_STATION:
+                system = new RepairStation();
                 break;
             default:
                 Debug.LogError("Unkown System Type: " + systemType);
@@ -194,7 +197,7 @@ public class SolarPanels : SystemClass
     {
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.PUMP);
-        requiredComponents.Add(ComponentType.NITROGEN_TANK);
+        //requiredComponents.Add(ComponentType.NITROGEN_TANK);
     }
 
     
@@ -208,32 +211,48 @@ public class SolarPanels : SystemClass
 
 public class MainLights : SystemClass
 {
+    GameObject mainlights;
     public MainLights()
     {
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.POWER_CONNECTOR);
+        mainlights = GameObject.Find("MainLights");
     }
     public override void runTick()
     {
         if (this.isWorking(true))
         {
+            //Main light empty on
+            mainlights.SetActive(true);
+        }
+        else
+        {
             //Main light empty off
+            mainlights.SetActive(false);
         }
     }
 }
 
 public class BackupLights : SystemClass
 {
+    GameObject backuplights;
     public BackupLights()
     {
         requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.POWER_CONNECTOR);
+        backuplights = GameObject.Find("BackUpLights");
     }
     public override void runTick()
     {
         if (this.isWorking(true))
         {
+            //backup light empty on
+            backuplights.SetActive(true);
+        }
+        else
+        {
             //backup light empty off
+            backuplights.SetActive(false);
         }
     }
 }
@@ -263,7 +282,7 @@ public class BatteryCharger : SystemClass
 
 public class RepairStation : SystemClass
 {
-    Component componentRepairing;
+    public Component componentRepairing;
     public RepairStation()
     {
         requiredComponents.Add(ComponentType.FUSE);
@@ -271,10 +290,10 @@ public class RepairStation : SystemClass
 
     public override void runTick()
     {
-        if(componentRepairing != null)
+        if (componentRepairing != null)
         {
             componentRepairing.repairTime++;
-            if(componentRepairing.repairTime > 20*componentRepairing.repairCost)
+            if (componentRepairing.repairTime > 20 * componentRepairing.repairCost)
             {
                 Debug.Log("Repair Complete On: " + componentRepairing.type);
             }

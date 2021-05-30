@@ -6,18 +6,17 @@ public class EventSystem : MonoBehaviour
 {
     public float waitToStart = 0;
     public float tickTime = 30;
+    public LifeSupport lifeSupport;
     [Space(10)]
     public int powerSurgeFusePercentage = 90;
 
     SystemScript[] systems;
-    LifeSupport lifeSupport;
 
     // Start is called before the first frame update
     void Start()
     {
         systems = Object.FindObjectsOfType<SystemScript>();
-
-
+        
         InvokeRepeating("Run", waitToStart, tickTime);
     }
 

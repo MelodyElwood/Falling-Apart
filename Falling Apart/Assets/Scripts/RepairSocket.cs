@@ -9,7 +9,7 @@ public class RepairSocket : XRSocketInteractor
     [Header("Repair Socket Variables")]
     public SystemScript parentSystemScript;
 
-    SystemClass parentSystem;
+    RepairStation parentSystem;
 
     public override bool CanHover(XRBaseInteractable interactable)
     {
@@ -24,8 +24,8 @@ public class RepairSocket : XRSocketInteractor
     //Called just before the component is added
     protected override void OnSelectEntering(XRBaseInteractable interactable)
     {
-        parentSystem = parentSystemScript.system;
-        parentSystem.AddComponent(interactable.GetComponent<ComponentScript>().component);
+        parentSystem = (RepairStation)parentSystemScript.system;
+        parentSystem.componentRepairing = (interactable.GetComponent<ComponentScript>().component);
         if (interactable.gameObject.GetComponent<ComponentScript>().componentType == ComponentType.FILTER) ((Filter)interactable.gameObject.GetComponent<ComponentScript>().component).clean();
         base.OnSelectEntering(interactable);
     }
@@ -33,8 +33,8 @@ public class RepairSocket : XRSocketInteractor
     //Called just before the component is removed
     protected override void OnSelectExiting(XRBaseInteractable interactable)
     {
-        parentSystem = parentSystemScript.system;
-        parentSystem.RemoveComponent(interactable.GetComponent<ComponentScript>().component);
+        parentSystem = (RepairStation)parentSystemScript.system;
+        parentSystem.componentRepairing = (interactable.GetComponent<ComponentScript>().component);
         base.OnSelectExiting(interactable);
     }
 }
