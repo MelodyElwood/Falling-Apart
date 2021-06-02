@@ -54,13 +54,14 @@ public abstract class SystemClass
     public List<ComponentType> requiredComponents = new List<ComponentType>();
     public List<Component> systemComponents = new List<Component>();
 
-    public virtual void runTick() { }
+    public virtual void runTick() {}
 
-    public bool isWorking(bool consumeCharge)
+    public virtual bool isWorking(bool consumeCharge)
     {
         //First check if it's functional
         foreach (ComponentType ct in requiredComponents)
         {
+            //Debug.Log(this + " testing " + ct);
             bool hasThisComponent = false;
             foreach (Component c in systemComponents)
             {
@@ -80,7 +81,7 @@ public abstract class SystemClass
             }
         }
 
-        //Then check if it's connected to power (Change this to also check if power is running)
+        //Then check if it's connected to power
         if(this.isConnected())
         {
             return true;
@@ -91,13 +92,13 @@ public abstract class SystemClass
         {
             if (c.type == ComponentType.BATTERY && !c.isBroken)
             {
-                Debug.Log("Battery for " + this + " is out of charge.");
+                //Debug.Log("Battery for " + this + " is being used.");
                 return this.useBattery(consumeCharge); //Returns false if it's not working
             }
         }
 
         //Finaly send back false if it didn't have a power connector and battery
-        Debug.Log(this + " Does not have a battery or power connector that work");
+        Debug.LogWarning(this + " is offline");
         foreach(Component c in systemComponents) Debug.LogWarning(c + " IsBroken: " + c.isBroken + " Type: " + c.type + " IsAccepted: " + (c.type == ComponentType.POWER_CONNECTOR && !c.isBroken));
         return false;
     } //Check if it is working        (NEEDS TO BE FIXED WITH getComponent)
@@ -159,6 +160,7 @@ public abstract class SystemClass
     {
         systemComponents.Remove(component);
     }
+
 }
 
 public class OxygenGenerator : SystemClass
@@ -196,13 +198,12 @@ public class SolarPanels : SystemClass
     public SolarPanels()
     {
         requiredComponents.Add(ComponentType.FUSE);
-        requiredComponents.Add(ComponentType.PUMP);
-        //requiredComponents.Add(ComponentType.NITROGEN_TANK);
     }
 
     
     public override void runTick() {
-        if(this.isWorking(true))
+        base.runTick();
+        if (this.isWorking(true))
         {
             SystemScript.powerIsOn = true;
         }
@@ -220,6 +221,7 @@ public class MainLights : SystemClass
     }
     public override void runTick()
     {
+        base.runTick();
         if (this.isWorking(true))
         {
             //Main light empty on
@@ -238,12 +240,12 @@ public class BackupLights : SystemClass
     GameObject backuplights;
     public BackupLights()
     {
-        requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.POWER_CONNECTOR);
         backuplights = GameObject.Find("BackUpLights");
     }
     public override void runTick()
     {
+        base.runTick();
         if (this.isWorking(true))
         {
             //backup light empty on
@@ -262,11 +264,11 @@ public class BatteryCharger : SystemClass
     public BatteryCharger()
     {
         requiredComponents.Add(ComponentType.FUSE);
-        requiredComponents.Add(ComponentType.FUSE);
         requiredComponents.Add(ComponentType.POWER_CONNECTOR);
     }
     public override void runTick()
     {
+        base.runTick();
         if (this.isWorking(true))
         {
             foreach(Component c in systemComponents)
@@ -288,8 +290,23 @@ public class RepairStation : SystemClass
         requiredComponents.Add(ComponentType.FUSE);
     }
 
+    public override bool isWorking(bool consumeCharge)
+    {
+        //Check if it's functional (Repair station has an internal reactor, so doesn't need a connection to power)
+        foreach (ComponentType ct in requiredComponents)
+        {
+            if(!hasComponent(ct) || getComponent(ct).isBroken)
+            {
+                Debug.Log(this + " Does not have " + ct);
+                return false;
+            }
+        }
+        return true;
+    }
+
     public override void runTick()
     {
+        base.runTick();
         if (componentRepairing != null)
         {
             componentRepairing.repairTime++;

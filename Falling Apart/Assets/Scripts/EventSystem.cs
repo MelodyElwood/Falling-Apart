@@ -5,7 +5,7 @@ using UnityEngine;
 public class EventSystem : MonoBehaviour
 {
     public float waitToStart = 0;
-    public float tickTime = 30;
+    public float tickTime = 10;
     public LifeSupport lifeSupport;
     [Space(10)]
     public int powerSurgeFusePercentage = 90;
@@ -34,32 +34,33 @@ public class EventSystem : MonoBehaviour
         //2. Power Surge: Break a random fuse connected to the power network (Or, less likely, a power connector)
         else if (eventRoll == 2)
         {
-                SystemClass system = systems[Random.Range(0, systems.Length)].system;
-                if (system.isConnected())
-                {
-                    int powerRoll = Random.Range(1, 101); //Get a random number between 1 and 100 (inclusive)
-                    if (powerRoll < powerSurgeFusePercentage) //Damage Fuse (or if no fuse, some other part)
-                    {
-                        if (system.hasComponent(ComponentType.FUSE)) system.getComponent(ComponentType.FUSE).damage();
-                        else damageRandomComponent(system);
-                    }
-                    else //Damage power connector
-                    {
-                        system.getComponent(ComponentType.POWER_CONNECTOR).damage();
-                    }
-                }
+            powerSurge();
         }
         //3. Shade: Cause Solar pannels to stop working    [NOT IMPLEMENTED]
         else if (eventRoll == 3)
         {
-            //Do something
+            Debug.Log("Event Roll, shade");
+            //Do something, for now just break something
+            damageRandomComponent();
         }
         //4. Combustion: Loose the game if O2 percentage is above 50%
         else if (eventRoll == 4)
         {
-            lifeSupport.die();
+            Debug.Log("Event Roll, spark");
+            if (lifeSupport.pO2 > 50f)
+            {
+                lifeSupport.die("Combustion");
+            }
+            else //If it doesn't kill, cause a power surge
+            {
+                powerSurge();
+            }
         }
         //5-7 Nothing happens
+        else
+        {
+            Debug.Log("Event Roll, nothing happens");
+        }
 
     }
 
@@ -72,6 +73,25 @@ public class EventSystem : MonoBehaviour
     public void damageRandomComponent(SystemClass system) //Damages a random component from a given system
     {
         Component component = system.systemComponents[Random.Range(0, system.systemComponents.Count)];
+        Debug.Log("Damaged " + component.type + " from " + system);
         component.damage();
+    }
+
+    public void powerSurge()
+    {
+        SystemClass system = systems[Random.Range(0, systems.Length)].system;
+        if (system.isConnected())
+        {
+            int powerRoll = Random.Range(1, 101); //Get a random number between 1 and 100 (inclusive)
+            if (powerRoll < powerSurgeFusePercentage) //Damage Fuse (or if no fuse, some other part)
+            {
+                if (system.hasComponent(ComponentType.FUSE)) system.getComponent(ComponentType.FUSE).damage();
+                else damageRandomComponent(system);
+            }
+            else //Damage power connector
+            {
+                system.getComponent(ComponentType.POWER_CONNECTOR).damage();
+            }
+        }
     }
 }

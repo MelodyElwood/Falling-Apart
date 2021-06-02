@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 interface BreakableComponent
 {
@@ -44,7 +45,7 @@ public class ComponentScript : MonoBehaviour
                 component = new AlarmBuzzer();
                 break;
             case ComponentType.SCREEN:
-                component = new ScreenComponent();
+                component = new ScreenComponent(this.gameObject.GetComponentInChildren<Text>());
                 break;
             case ComponentType.POWER_CONNECTOR:
                 component = new PowerConnector();
@@ -167,11 +168,29 @@ public class AlarmBuzzer : Component, BreakableComponent
 
 public class ScreenComponent : Component, BreakableComponent
 {
-    public ScreenComponent()
+    //Text textbox; Used in singleplayer version
+    public ScreenComponent(Text textbox)
     {
         repairCost = 1;
         type = ComponentType.SCREEN;
+        //this.textbox = textbox;
+        //Debug.Log(" Textbox: " + textbox);
+        //clearText();
     }
+    /**
+    public void setText(string s)
+    {
+        textbox.text = s;
+    }
+    public string getText()
+    {
+        return textbox.text;
+    }
+    public void clearText()
+    {
+        setText("");
+    }
+    **/
 }
 
 public class PowerConnector : Component, BreakableComponent
