@@ -250,5 +250,8 @@ public class LifeSupport : MonoBehaviour
             addErrorsToEventLog(s);
         }
         if (hasAddedError) addToEventLog("\n---------------------\n"); //Add end bit for seperation if error is found
+
+        //Remove the first part of the event log when it starts to get too long in order to fix issues
+        if(eventLog.text.Length == )
     }
 }
