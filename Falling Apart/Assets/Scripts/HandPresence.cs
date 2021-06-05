@@ -25,13 +25,11 @@ public class HandPresence : MonoBehaviour
         {
             TryInitialize();
         }
-        else
-        {
-            UpdateHandAnimation();
-        }
+
+        UpdateHandAnimation();
     }
 
-    void TryInitialize()
+    void TryInitialize() //trys to create a hand
     {
         List<InputDevice> devices = new List<InputDevice>();
         InputDevices.GetDevicesWithCharacteristics(controllerCharacteristics, devices);
@@ -46,10 +44,11 @@ public class HandPresence : MonoBehaviour
 
             spawnedHand = Instantiate(handPrefab, transform);
             handAnimator = spawnedHand.GetComponent<Animator>();
+            Debug.Log("Creaed hand");
         }
     }
 
-    void UpdateHandAnimation()
+    void UpdateHandAnimation() //Animates the hand
     {
         if (targetDevice.TryGetFeatureValue(CommonUsages.grip, out float gripValue))
         {

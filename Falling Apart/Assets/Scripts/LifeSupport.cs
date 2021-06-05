@@ -209,6 +209,7 @@ public class LifeSupport : MonoBehaviour
         deathtext.text = causeOfDeath;
     }
 
+    //Everything past here has to do with the mission control screen.
     public void addErrorsToEventLog(SystemClass s)
     {
         foreach (Component c in s.systemComponents)
