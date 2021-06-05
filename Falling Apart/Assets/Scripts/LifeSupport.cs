@@ -39,6 +39,7 @@ public class LifeSupport : MonoBehaviour
     public string missionControlManualVersion;
     public GameObject texBoxParent; //the parent for the mission control textboxes.
     public Text eventLog;
+    public int eventLogMaxLength = 10000;
 
 
     [Header("Only References")]
@@ -158,7 +159,7 @@ public class LifeSupport : MonoBehaviour
             currentTicksTillDeath--;
             if (currentTicksTillDeath < 0)
             {
-                die("Preasure at: " + currentAtmospheres);
+                die(currentAtmospheres > safeMaxAtmospheres ? "Nitrogen Narcosis" : "Hypoxia");
             }
         }
         else if(pO2 > safeMaxO2 || pO2 < safeMinO2)
@@ -169,7 +170,7 @@ public class LifeSupport : MonoBehaviour
             currentTicksTillDeath--;
             if (currentTicksTillDeath < 0)
             {
-                die("O2 at: " + pO2);
+                die(pO2 > safeMaxO2 ? "Unknown, possible combustion due to high oxygen atmosphere" : "Asphyxiation");
             }
         }
         else if (pCO2 > safeMaxCO2 || pCO2 < safeMinCO2)
@@ -180,7 +181,7 @@ public class LifeSupport : MonoBehaviour
             currentTicksTillDeath--;
             if (currentTicksTillDeath < 0)
             {
-                die("CO2 at: " + pCO2);
+                die(pCO2 > safeMaxCO2 ? "Hypercapnia" : "Unknown, death due to extremely low CO2 content");
             }
         }
         else
@@ -201,10 +202,11 @@ public class LifeSupport : MonoBehaviour
         return x/currentAtmospheres;
     }
 
-    public void die(string s)
+    public void die(string causeOfDeath) //Kills the player, and displayes the cause of death to mission control
     {
-        overlay.FadeOut();
-        deathtext.text = s;
+        overlay.FadeIn();
+        deathtext.gameObject.SetActive(true);
+        deathtext.text = causeOfDeath;
     }
 
     public void addErrorsToEventLog(SystemClass s)
@@ -252,6 +254,9 @@ public class LifeSupport : MonoBehaviour
         if (hasAddedError) addToEventLog("\n---------------------\n"); //Add end bit for seperation if error is found
 
         //Remove the first part of the event log when it starts to get too long in order to fix issues
-        if(eventLog.text.Length == )
+        if(eventLog.text.Length > eventLogMaxLength)
+        {
+            eventLog.text = eventLog.text.Remove(0, eventLog.text.Length - eventLogMaxLength);
+        }
     }
 }

@@ -48,6 +48,7 @@ public class Death : MonoBehaviour {
 
     public void FadeIn(){
         // Fade the overlay to `in_alpha`.
+        Debug.Log("Dead");
         this.from_color.a = this.out_alpha;
         this.to_color.a = this.in_alpha;
         if(this.to_color != this.material.color){
