@@ -102,7 +102,7 @@ public class Battery : Component, BreakableComponent
         type = ComponentType.BATTERY;
     }
 
-    public bool consumeCharge(bool consumeCharge) //Returns true if it still has power, false if it doesn't
+    public bool consumeCharge(bool consumeCharge) //Returns true if it still has power, false if it doesn't. Consumes charge if the bool parameter is true.
     {
         if (charge <= 0)
         {
@@ -128,6 +128,10 @@ public class Battery : Component, BreakableComponent
             return charge;
         }
 
+    }
+    public int getCharge()
+    {
+        return charge;
     }
 }
 
@@ -200,8 +204,6 @@ public class PowerConnector : Component, BreakableComponent
         repairCost = 2;
         type = ComponentType.POWER_CONNECTOR;
     }
-
-    //Add in checking if it's connected to power
 }
 
 public class Pump : Component, BreakableComponent

@@ -38,6 +38,7 @@ public class LifeSupport : MonoBehaviour
     [Header("Mission Control Variables")]
     public string missionControlManualVersion;
     public GameObject texBoxParent; //the parent for the mission control textboxes.
+    public Scrollbar eventLogScrollbar;
     public Text eventLog;
     public int eventLogMaxLength = 10000;
 
@@ -62,7 +63,8 @@ public class LifeSupport : MonoBehaviour
     SystemScript[] systemsScripts;
     List<SystemClass> systems = new List<SystemClass>();
 
-    bool hasAddedError;
+    private bool hasAddedError;
+    private float pScrollBarValue; //Stores the previous scrollbar value (at the start of a tick)
 
     // Start is called before the first frame update
     void Start()
@@ -94,6 +96,8 @@ public class LifeSupport : MonoBehaviour
 
     void Run()
     {
+        pScrollBarValue = eventLogScrollbar.value; //Get where the scroll bar is at the start of the tick
+
         //Run all of the systems that need to run on tick
         foreach (SystemClass s in systems)
         {
@@ -210,7 +214,7 @@ public class LifeSupport : MonoBehaviour
     }
 
     //Everything past here has to do with the mission control screen.
-    public void addErrorsToEventLog(SystemClass s)
+    private void addErrorsToEventLog(SystemClass s)
     {
         foreach (Component c in s.systemComponents)
         {
@@ -222,35 +226,63 @@ public class LifeSupport : MonoBehaviour
         }
     }
 
-    public void addToEventLog(string s)
+    private void addToEventLog(string s)
     {
         eventLog.text = eventLog.text + s + "\n";
     }
 
-    public void updateSystemStatus(SystemClass system, bool status)
+    private Text getText(string name)
     {
-        texBoxParent.transform.Find(system.ToString()).gameObject.GetComponent<Text>().color = status ? new Color(0, 255, 0, 1) : new Color(255, 0, 0, 1);
-        texBoxParent.transform.Find(system.ToString()).gameObject.GetComponent<Text>().text = status ? "Online" : "Offline";
+        return texBoxParent.transform.Find(name).gameObject.GetComponent<Text>();
     }
 
-    public void updateLifeSupportStatus()
+    private void updateSystemStatus(SystemClass system, bool status)
     {
-        texBoxParent.transform.Find("Pressure").gameObject.GetComponent<Text>().text = System.String.Format("{0:0.000}", currentAtmospheres) + " atm";
-        texBoxParent.transform.Find("Oxygen").gameObject.GetComponent<Text>().text = System.String.Format("{0:0.00}", pO2) + "%";
-        texBoxParent.transform.Find("Carbon Dioxide").gameObject.GetComponent<Text>().text = System.String.Format("{0:0.00}", pCO2) + "%";
-        texBoxParent.transform.Find("Nitrogen").gameObject.GetComponent<Text>().text = System.String.Format("{0:0.00}", pN) + "%";
+        getText(system.ToString()).color = status ? new Color(0, 255, 0, 1) : new Color(255, 0, 0, 1);
+        getText(system.ToString()).text = status ? "Online" : "Offline";
+    }
+
+    private void updateLifeSupportStatus()
+    {
+        getText("Pressure").text = System.String.Format("{0:0.000}", currentAtmospheres) + " atm";
+        getText("Oxygen").text = System.String.Format("{0:0.00}", pO2) + "%";
+        getText("Carbon Dioxide").text = System.String.Format("{0:0.00}", pCO2) + "%";
+        getText("Nitrogen").text = System.String.Format("{0:0.00}", pN) + "%";
+    }
+
+    private void updateBatteryData(BatteryCharger b)
+    {
+        int[] batteryPercents = b.getBatteryPercentage();
+        getText("BatteryCharge 1").text = batteryPercents[0] + "%";
+        getText("BatteryCharge 2").text = batteryPercents[1] + "%";
+    }
+    private void updateRepairData(RepairStation r)
+    {
+        getText("RepairPercentage").text = System.String.Format("{0:0.00}", r.getRepairPercentage()) + "%";
+        
     }
 
     public void updateMissionControl()
     {
         //Life support
         updateLifeSupportStatus();
+
         //Error event log and system status
         hasAddedError = false;
         foreach (SystemClass s in systems)
         {
             updateSystemStatus(s, s.isWorking(false));
             addErrorsToEventLog(s);
+            
+            //Battery Charge and Repair amount update when that system is found
+            if (s.ToString() == "BatteryCharger")
+            {
+                updateBatteryData((BatteryCharger)s);
+            }
+            else if(s.ToString() == "RepairStation")
+            {
+                updateRepairData((RepairStation)s);
+            }
         }
         if (hasAddedError) addToEventLog("\n---------------------\n"); //Add end bit for seperation if error is found
 
@@ -258,6 +290,12 @@ public class LifeSupport : MonoBehaviour
         if(eventLog.text.Length > eventLogMaxLength)
         {
             eventLog.text = eventLog.text.Remove(0, eventLog.text.Length - eventLogMaxLength);
+        }
+
+        //If scrollbar was at the bottom, move it to the bottom
+        if(pScrollBarValue <= 0.1)
+        {
+            eventLogScrollbar.value = 0;
         }
     }
 }

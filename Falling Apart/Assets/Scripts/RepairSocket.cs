@@ -34,7 +34,7 @@ public class RepairSocket : XRSocketInteractor
     protected override void OnSelectExiting(XRBaseInteractable interactable)
     {
         parentSystem = (RepairStation)parentSystemScript.system;
-        parentSystem.componentRepairing = (interactable.GetComponent<ComponentScript>().component);
+        parentSystem.componentRepairing = null;
         base.OnSelectExiting(interactable);
     }
 }

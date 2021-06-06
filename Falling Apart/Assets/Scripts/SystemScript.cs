@@ -13,7 +13,7 @@ public class SystemScript : MonoBehaviour
     public bool forcedWorking = false;
 
     public SystemClass system;
-    // Start is called before the first frame update
+
     void Awake()
     {
         switch (systemType)
@@ -43,7 +43,7 @@ public class SystemScript : MonoBehaviour
                 system = new RepairStation();
                 break;
             default:
-                Debug.LogError("Unkown System Type: " + systemType);
+                Debug.LogError("Unkown System Type: ", this);
                 break;
         }
     }
@@ -280,11 +280,36 @@ public class BatteryCharger : SystemClass
             }
         }
     }
+
+    public int[] getBatteryPercentage() //returns the charge percentage of both batteries in the system.
+    {
+        int battery1Charge = 0;
+        int battery2Charge = 0;
+        bool firstBattery = true;
+        foreach (Component c in systemComponents)
+        {
+            if (c.type == ComponentType.BATTERY)
+            {
+                if (firstBattery)
+                {
+                    battery1Charge = ((Battery)c).getCharge();
+                    firstBattery = false;
+                }
+                else
+                {
+                    battery2Charge = ((Battery)c).getCharge();
+                }
+            }
+        }
+        return new int[] { battery1Charge, battery2Charge };
+    }
 }
 
 public class RepairStation : SystemClass
 {
     public Component componentRepairing;
+    public int repairTimeMultiplier = 20;
+
     public RepairStation()
     {
         requiredComponents.Add(ComponentType.FUSE);
@@ -309,11 +334,32 @@ public class RepairStation : SystemClass
         base.runTick();
         if (componentRepairing != null)
         {
-            componentRepairing.repairTime++;
-            if (componentRepairing.repairTime > 20 * componentRepairing.repairCost)
+            if (componentRepairing.isBroken)
             {
-                Debug.Log("Repair Complete On: " + componentRepairing.type);
+                componentRepairing.repairTime++;
+                if (componentRepairing.repairTime > repairTimeMultiplier * componentRepairing.repairCost)
+                {
+                    componentRepairing.repairTime = 0;
+                    componentRepairing.isBroken = false;
+                    Debug.Log("Repair Complete On: " + componentRepairing.type);
+                }
             }
+        }
+    }
+
+    public double getRepairPercentage()
+    {
+        if (componentRepairing == null)
+        {
+            return 0;
+        }
+        else if(!componentRepairing.isBroken)
+        {
+            return 100;
+        }
+        else
+        {
+            return (componentRepairing.repairTime / (repairTimeMultiplier * componentRepairing.repairCost)) * 100;
         }
     }
 }
